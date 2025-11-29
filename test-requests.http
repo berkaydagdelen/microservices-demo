@@ -1,0 +1,38 @@
+### UserService Test Ýstekleri
+
+### Tüm kullanýcýlarý getir
+GET http://localhost:5001/api/users
+
+### ID=1 olan kullanýcýyý getir
+GET http://localhost:5001/api/users/1
+
+### Yeni kullanýcý oluþtur
+POST http://localhost:5001/api/users
+Content-Type: application/json
+
+{
+  "name": "Test Kullanýcý",
+  "email": "test@example.com"
+}
+
+### OrderService Test Ýstekleri
+
+### Tüm sipariþleri getir
+GET http://localhost:5002/api/orders
+
+### ID=1 olan sipariþi getir
+GET http://localhost:5002/api/orders/1
+
+### Kullanýcý ID=1'in sipariþlerini getir
+GET http://localhost:5002/api/orders/user/1
+
+### Yeni sipariþ oluþtur
+POST http://localhost:5002/api/orders
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "productName": "Test Ürün",
+  "price": 999.99
+}
+

@@ -1,0 +1,190 @@
+{
+	"info": {
+		"_postman_id": "microservices-demo-collection",
+		"name": "Microservices Demo",
+		"description": "UserService ve OrderService için Postman Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "UserService",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Tüm kullanýcýlarý getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/api/users/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"users",
+								"1"
+							]
+						},
+						"description": "ID ile belirli bir kullanýcýyý getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Create New User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Yeni Kullanýcý\",\n  \"email\": \"yeni@example.com\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5001/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Yeni bir kullanýcý oluþturur"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "OrderService",
+			"item": [
+				{
+					"name": "Get All Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5002/api/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5002",
+							"path": [
+								"api",
+								"orders"
+							]
+						},
+						"description": "Tüm sipariþleri getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5002/api/orders/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5002",
+							"path": [
+								"api",
+								"orders",
+								"1"
+							]
+						},
+						"description": "ID ile belirli bir sipariþi getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders By User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5002/api/orders/user/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5002",
+							"path": [
+								"api",
+								"orders",
+								"user",
+								"1"
+							]
+						},
+						"description": "Belirli bir kullanýcýnýn tüm sipariþlerini getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": 1,\n  \"productName\": \"Yeni Ürün\",\n  \"price\": 999.99\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5002/api/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5002",
+							"path": [
+								"api",
+								"orders"
+							]
+						},
+						"description": "Yeni bir sipariþ oluþturur"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
+
