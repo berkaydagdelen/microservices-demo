@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 // Service'leri kaydet (iþ mantýðý katmaný)
-builder.Services.AddScoped<IOrderService, >();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 var app = builder.Build();
 
