@@ -14,7 +14,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 // Service'leri kaydet (iþ mantýðý katmaný)
-builder.Services.AddScoped<IOrderService, OrderService>();
+// OrderService namespace ile çakýþtýðý için tam namespace kullanýyoruz
+builder.Services.AddScoped<IOrderService, OrderService.Services.OrderService>();
 
 var app = builder.Build();
 

@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Service'leri kaydet (iþ mantýðý katmaný)
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserService, UserService.Services.UserService>();
 
 var app = builder.Build();
 
