@@ -5,7 +5,7 @@ namespace WaterProduction.Services
 {
     /// <summary>
     /// Su üretim iþlemleri için service implementation
-    /// Ýþ mantýðý ve Ýzbb API entegrasyonu burada
+    /// Ýþ mantýðý ve ÝZBB API entegrasyonu burada
     /// </summary>
     public class WaterProductionService : IWaterProductionService
     {
@@ -31,8 +31,18 @@ namespace WaterProduction.Services
         /// </summary>
         public async Task<List<WaterProductionData>> GetAllDataAsync()
         {
-            _logger.LogInformation("Service: Tüm su üretim verileri getiriliyor");
-            return await _repository.GetAllAsync();
+            try
+            {
+                _logger.LogInformation("Service: Tüm su üretim verileri getiriliyor");
+                var data = await _repository.GetAllAsync();
+                _logger.LogInformation($"Service: {data.Count} adet veri getirildi");
+                return data;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Service: Tüm veriler getirilirken hata oluþtu");
+                throw;
+            }
         }
 
         /// <summary>
@@ -40,8 +50,37 @@ namespace WaterProduction.Services
         /// </summary>
         public async Task<WaterProductionData?> GetDataByIdAsync(int id)
         {
-            _logger.LogInformation($"Service: Su üretim verisi ID {id} getiriliyor");
-            return await _repository.GetByIdAsync(id);
+            try
+            {
+                if (id <= 0)
+                {
+                    _logger.LogWarning($"Service: Geçersiz ID deðeri: {id}");
+                    throw new ArgumentException("ID 0'dan büyük olmalýdýr", nameof(id));
+                }
+
+                _logger.LogInformation($"Service: Su üretim verisi ID {id} getiriliyor");
+                var data = await _repository.GetByIdAsync(id);
+                
+                if (data == null)
+                {
+                    _logger.LogWarning($"Service: ID {id} ile veri bulunamadý");
+                }
+                else
+                {
+                    _logger.LogInformation($"Service: ID {id} ile veri bulundu");
+                }
+                
+                return data;
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Service: ID {id} ile veri getirilirken hata oluþtu");
+                throw;
+            }
         }
 
         /// <summary>
@@ -49,8 +88,28 @@ namespace WaterProduction.Services
         /// </summary>
         public async Task<List<WaterProductionData>> GetDataByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
-            _logger.LogInformation($"Service: {startDate:yyyy-MM-dd} - {endDate:yyyy-MM-dd} tarih aralýðýndaki veriler getiriliyor");
-            return await _repository.GetByDateRangeAsync(startDate, endDate);
+            try
+            {
+                if (startDate > endDate)
+                {
+                    _logger.LogWarning($"Service: Geçersiz tarih aralýðý - Baþlangýç: {startDate:yyyy-MM-dd}, Bitiþ: {endDate:yyyy-MM-dd}");
+                    throw new ArgumentException("Baþlangýç tarihi bitiþ tarihinden büyük olamaz");
+                }
+
+                _logger.LogInformation($"Service: {startDate:yyyy-MM-dd} - {endDate:yyyy-MM-dd} tarih aralýðýndaki veriler getiriliyor");
+                var data = await _repository.GetByDateRangeAsync(startDate, endDate);
+                _logger.LogInformation($"Service: {data.Count} adet veri getirildi");
+                return data;
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Service: Tarih aralýðýna göre veriler getirilirken hata oluþtu");
+                throw;
+            }
         }
 
         /// <summary>
@@ -125,27 +184,54 @@ namespace WaterProduction.Services
         /// </summary>
         public async Task<WaterProductionData> CreateDataAsync(WaterProductionData data)
         {
-            _logger.LogInformation($"Service: Yeni su üretim verisi oluþturuluyor: {data.FacilityName}");
-
-            // Ýþ kurallarý
-            if (string.IsNullOrWhiteSpace(data.FacilityName))
+            try
             {
-                throw new ArgumentException("Tesis adý boþ olamaz!");
-            }
+                if (data == null)
+                {
+                    _logger.LogWarning("Service: Null veri ile create iþlemi yapýlmaya çalýþýldý");
+                    throw new ArgumentNullException(nameof(data), "Veri boþ olamaz");
+                }
 
-            if (data.ProductionAmount <= 0)
+                _logger.LogInformation($"Service: Yeni su üretim verisi oluþturuluyor: {data.FacilityName}");
+
+                // Ýþ kurallarý
+                if (string.IsNullOrWhiteSpace(data.FacilityName))
+                {
+                    _logger.LogWarning("Service: Tesis adý boþ olamaz");
+                    throw new ArgumentException("Tesis adý boþ olamaz!", nameof(data));
+                }
+
+                if (data.ProductionAmount <= 0)
+                {
+                    _logger.LogWarning($"Service: Geçersiz üretim miktarý: {data.ProductionAmount}");
+                    throw new ArgumentException("Üretim miktarý 0'dan büyük olmalýdýr!", nameof(data));
+                }
+
+                // Duplicate kontrolü
+                var exists = await _repository.ExistsAsync(data.FacilityName, data.ProductionDate);
+                if (exists)
+                {
+                    _logger.LogWarning($"Service: Duplicate veri - Tesis: {data.FacilityName}, Tarih: {data.ProductionDate:yyyy-MM-dd}");
+                    throw new InvalidOperationException($"Bu tarih ve tesis için zaten veri mevcut!");
+                }
+
+                var createdData = await _repository.CreateAsync(data);
+                _logger.LogInformation($"Service: Veri baþarýyla oluþturuldu - ID: {createdData.Id}");
+                return createdData;
+            }
+            catch (ArgumentException)
             {
-                throw new ArgumentException("Üretim miktarý 0'dan büyük olmalýdýr!");
+                throw;
             }
-
-            // Duplicate kontrolü
-            var exists = await _repository.ExistsAsync(data.FacilityName, data.ProductionDate);
-            if (exists)
+            catch (InvalidOperationException)
             {
-                throw new InvalidOperationException($"Bu tarih ve tesis için zaten veri mevcut!");
+                throw;
             }
-
-            return await _repository.CreateAsync(data);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Service: Veri oluþturulurken hata oluþtu");
+                throw;
+            }
         }
 
         /// <summary>
