@@ -1,3 +1,4 @@
+using UserService.Data;
 using UserService.Repositories;
 using UserService.Services;
 
@@ -8,6 +9,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Entity Framework Core - DbContext Kaydý
+// Connection string appsettings.json'dan okunur
+builder.Services.AddDbContext<UserDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Dependency Injection (DI) Ayarlarý
 // Repository'leri kaydet (veri eriþim katmaný)

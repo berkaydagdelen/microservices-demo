@@ -25,20 +25,20 @@ namespace UserService.Controllers
         // GET: api/users
         // Tüm kullanýcýlarý getir
         [HttpGet]
-        public ActionResult<IEnumerable<User>> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
         {
             _logger.LogInformation("Controller: Tüm kullanýcýlar isteniyor");
-            var users = _userService.GetAllUsers();
+            var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
 
         // GET: api/users/1
         // Belirli bir kullanýcýyý ID ile getir
         [HttpGet("{id}")]
-        public ActionResult<User> GetUser(int id)
+        public async Task<ActionResult<User>> GetUser(int id)
         {
             _logger.LogInformation($"Controller: Kullanýcý ID {id} isteniyor");
-            var user = _userService.GetUserById(id);
+            var user = await _userService.GetUserByIdAsync(id);
             
             if (user == null)
             {
@@ -51,12 +51,12 @@ namespace UserService.Controllers
         // POST: api/users
         // Yeni kullanýcý oluþtur
         [HttpPost]
-        public ActionResult<User> CreateUser([FromBody] User user)
+        public async Task<ActionResult<User>> CreateUser([FromBody] User user)
         {
             try
             {
                 _logger.LogInformation($"Controller: Yeni kullanýcý oluþturuluyor: {user.Name}");
-                var createdUser = _userService.CreateUser(user);
+                var createdUser = await _userService.CreateUserAsync(user);
                 return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
             }
             catch (InvalidOperationException ex)

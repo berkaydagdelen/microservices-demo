@@ -11,22 +11,22 @@ namespace UserService.Services
         /// <summary>
         /// Tüm kullanýcýlarý getirir
         /// </summary>
-        List<User> GetAllUsers();
+        Task<List<User>> GetAllUsersAsync();
 
         /// <summary>
         /// ID ile kullanýcý getirir
         /// </summary>
-        User? GetUserById(int id);
+        Task<User?> GetUserByIdAsync(int id);
 
         /// <summary>
         /// Yeni kullanýcý oluþturur (iþ kurallarý uygulanýr)
         /// </summary>
-        User CreateUser(User user);
+        Task<User> CreateUserAsync(User user);
 
         /// <summary>
         /// Email'in daha önce kullanýlýp kullanýlmadýðýný kontrol eder
         /// </summary>
-        bool IsEmailTaken(string email);
+        Task<bool> IsEmailTakenAsync(string email);
     }
 }
 

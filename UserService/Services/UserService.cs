@@ -22,19 +22,19 @@ namespace UserService.Services
         /// <summary>
         /// Tüm kullanýcýlarý getirir
         /// </summary>
-        public List<User> GetAllUsers()
+        public async Task<List<User>> GetAllUsersAsync()
         {
             _logger.LogInformation("Service: Tüm kullanýcýlar getiriliyor");
-            return _userRepository.GetAll();
+            return await _userRepository.GetAllAsync();
         }
 
         /// <summary>
         /// ID ile kullanýcý getirir
         /// </summary>
-        public User? GetUserById(int id)
+        public async Task<User?> GetUserByIdAsync(int id)
         {
             _logger.LogInformation($"Service: Kullanýcý ID {id} getiriliyor");
-            return _userRepository.GetById(id);
+            return await _userRepository.GetByIdAsync(id);
         }
 
         /// <summary>
@@ -43,12 +43,12 @@ namespace UserService.Services
         /// - Email kontrolü
         /// - Validasyon
         /// </summary>
-        public User CreateUser(User user)
+        public async Task<User> CreateUserAsync(User user)
         {
             _logger.LogInformation($"Service: Yeni kullanýcý oluþturuluyor: {user.Name}");
 
             // Ýþ Kuralý 1: Email kontrolü
-            if (IsEmailTaken(user.Email))
+            if (await IsEmailTakenAsync(user.Email))
             {
                 throw new InvalidOperationException($"Email '{user.Email}' zaten kullanýlýyor!");
             }
@@ -66,16 +66,15 @@ namespace UserService.Services
             }
 
             // Tüm kontroller geçti, kullanýcýyý oluþtur
-            return _userRepository.Create(user);
+            return await _userRepository.CreateAsync(user);
         }
 
         /// <summary>
         /// Email'in daha önce kullanýlýp kullanýlmadýðýný kontrol eder
         /// </summary>
-        public bool IsEmailTaken(string email)
+        public async Task<bool> IsEmailTakenAsync(string email)
         {
-            var users = _userRepository.GetAll();
-            return users.Any(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+            return await _userRepository.AnyAsync(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

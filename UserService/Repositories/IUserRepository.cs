@@ -4,29 +4,20 @@ namespace UserService.Repositories
 {
     /// <summary>
     /// Kullanýcý verilerine eriþim için repository interface'i
-    /// Bu interface, veri eriþim katmanýný tanýmlar
+    /// Generic Repository'den türer, özel metodlar ekler
     /// </summary>
-    public interface IUserRepository
+    public interface IUserRepository : IRepository<User>
     {
-        /// <summary>
-        /// Tüm kullanýcýlarý getirir
-        /// </summary>
-        List<User> GetAll();
+        // Generic Repository'den gelen metodlar:
+        // - GetAllAsync()
+        // - GetByIdAsync(int id)
+        // - CreateAsync(User user)
+        // - AnyAsync(...)
+        // - UpdateAsync(...)
+        // - DeleteAsync(...)
+        // vb.
 
-        /// <summary>
-        /// ID ile kullanýcý getirir
-        /// </summary>
-        User? GetById(int id);
-
-        /// <summary>
-        /// Yeni kullanýcý ekler
-        /// </summary>
-        User Create(User user);
-
-        /// <summary>
-        /// Kullanýcý var mý kontrol eder
-        /// </summary>
-        bool Exists(int id);
+        // Özel metodlar buraya eklenebilir
     }
 }
 
